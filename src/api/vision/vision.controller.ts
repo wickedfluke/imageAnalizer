@@ -1,3 +1,4 @@
+// src/controllers/computerVisionController.ts
 import { Request, Response } from 'express';
 import { analyzeImage } from '../vision/vision.service';
 
