@@ -12,6 +12,6 @@ export const analyzeImageController = async (req: Request, res: Response) => {
         const analysisResult = await analyzeImage(imageUrl);
         res.json(analysisResult);
     } catch (error) {
-        res.status(500).json({ error: error as any });
+        res.status(500).json({ error: (error as any).message });
     }
 };
