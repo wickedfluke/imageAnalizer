@@ -87,8 +87,21 @@ export const analyzeAndTranslateImages = async (languages: string[], imageFiles:
                 await imageAnalysisRecord.save();
             }
         } catch (error) {
-            console.error(`Errore nell'analisi dell'immagine ${fileName}:`, error);
-            throw new Error(`Errore nell'analisi dell'immagine ${fileName}`);
+            const errorMessage = error instanceof Error ? error.message : '';
+            if (errorMessage.includes('400')) {
+                console.error(`Richiesta non valida per il servizio di traduzione. Lingua non supportata o inesistente. Errore 400`);
+                throw new Error('Richiesta non valida per il servizio di traduzione. Lingua non supportata o inesistente. Errore 400');
+            } else {
+                console.error(`Errore nell'analisi dell'immagine ${fileName}:`, error);
+                const errorMessage = error instanceof Error ? error.message : 'Errore sconosciuto';
+                if (errorMessage.includes('Image URL is not accessible')) {
+                    console.error(`URL dell'immagine non accessibile. Errore 404`);
+                    throw new Error(`URL dell'immagine non accessibile. Errore 404`);
+                } else {
+                    console.error(`Errore sconosciuto durante l'analisi dell'immagine ${fileName}`);
+                    throw new Error(`Errore sconosciuto durante l'analisi dell'immagine ${fileName}`);
+                }
+            }
         }
     }
 };
